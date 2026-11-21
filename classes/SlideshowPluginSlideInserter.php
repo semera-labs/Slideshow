@@ -39,7 +39,7 @@ class SlideshowPluginSlideInserter
 	{
 		$elementTags = self::getElementTags();
 
-		if (isset($elementTags[$id]))
+		if ($id !== null && isset($elementTags[$id]))
 		{
 			return $elementTags[$id];
 		}

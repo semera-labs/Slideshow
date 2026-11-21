@@ -74,7 +74,7 @@ class SlideshowPlugin
 
 			if(is_array($post))
 			{
-				$post = $post[0];
+				$post = isset($post[0]) ? $post[0] : null;
 			}
 		}
 
@@ -172,11 +172,7 @@ class SlideshowPlugin
 			);
 
 			// Include the location of the admin-ajax.php file
-			wp_localize_script(
-				'slideshow-jquery-image-gallery-script',
-				'slideshow_jquery_image_gallery_script_adminURL',
-				admin_url()
-			);
+			SlideshowPluginMain::localizeAdminURL('slideshow-jquery-image-gallery-script');
 		}
 
 		// Return output

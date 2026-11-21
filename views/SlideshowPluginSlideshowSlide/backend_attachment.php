@@ -115,8 +115,8 @@ if ($data instanceof stdClass) :
 
 					<div class="slideshow-group">
 
-						<a href="<?php echo $editUrl; ?>" title="<?php _e('Edit', 'slideshow-jquery-image-gallery'); ?> &#34;<?php echo $attachment->post_title; ?>&#34;">
-							<img width="80" height="60" src="<?php echo $imageSrc; ?>" class="attachment-80x60" alt="<?php echo $attachment->post_title; ?>" title="<?php echo $attachment->post_title; ?>" />
+						<a href="<?php echo $editUrl; ?>" title="<?php _e('Edit', 'slideshow-jquery-image-gallery'); ?> &#34;<?php echo esc_attr($attachment->post_title); ?>&#34;">
+							<img width="80" height="60" src="<?php echo esc_url($imageSrc); ?>" class="attachment-80x60" alt="<?php echo esc_attr($attachment->post_title); ?>" title="<?php echo esc_attr($attachment->post_title); ?>" />
 						</a>
 
 					</div>

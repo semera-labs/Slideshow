@@ -190,7 +190,8 @@ class SlideshowPluginSlideshowStylesheet
 	public static function getStylesheet($styleName)
 	{
 		// Get custom style keys
-		$customStyleKeys = array_keys(get_option(SlideshowPluginGeneralSettings::$customStyles, array()));
+		$customStyleOption = get_option(SlideshowPluginGeneralSettings::$customStyles, array());
+		$customStyleKeys   = is_array($customStyleOption) ? array_keys($customStyleOption) : array();
 
 		// Match $styleName against custom style keys
 		if (in_array($styleName, $customStyleKeys))
@@ -200,7 +201,7 @@ class SlideshowPluginSlideshowStylesheet
 		}
 		else
 		{
-			$stylesheetFile = SlideshowPluginMain::getPluginPath() . DIRECTORY_SEPARATOR . 'style' . DIRECTORY_SEPARATOR . 'SlideshowPlugin' . DIRECTORY_SEPARATOR . $styleName . '.css';
+			$stylesheetFile = SlideshowPluginMain::getPluginPath() . DIRECTORY_SEPARATOR . 'style' . DIRECTORY_SEPARATOR . 'SlideshowPlugin' . DIRECTORY_SEPARATOR . basename($styleName) . '.css';
 
 			if (!file_exists($stylesheetFile))
 			{

@@ -3,12 +3,18 @@
  Plugin Name: Slideshow
  Plugin URI: http://wordpress.org/extend/plugins/slideshow-jquery-image-gallery/
  Description: The slideshow plugin is easily deployable on your website. Add any image that has already been uploaded to add to your slideshow, add text slides, or even add a video. Options and styles are customizable for every single slideshow on your website.
- Version: 2.3.1
+ Version: 2.3.2.1
  Requires at least: 3.5
  Author: StefanBoonstra
  Author URI: http://stefanboonstra.com/
  License: GPLv2
  Text Domain: slideshow-jquery-image-gallery
+ Update URI: false
+
+ Compatibility patch by Semera (PHP 8.x, current WordPress/jQuery) based on Slideshow 2.3.2 (development branch) by Stefan Boonstra.
+ Original code, author credits and the GPLv2 license are unchanged; the patch is not made or endorsed by the original
+ author. All changes are listed in readme.md. "Update URI: false" and the update filters below keep WordPress from
+ replacing this patched version with the (unmaintained) upstream release.
 */
 
 /**
@@ -22,7 +28,7 @@
 class SlideshowPluginMain
 {
 	/** @var string $version */
-	static $version = '2.3.1';
+	static $version = '2.3.2.1';
 
 	/**
 	 * Bootstraps the application by assigning the right functions to
@@ -64,6 +70,53 @@ class SlideshowPluginMain
 
 		// Initialize plugin updater
 		SlideshowPluginInstaller::init();
+
+		// Semera compatibility patch: do not offer the upstream release as an update, never auto-update this plugin
+		add_filter('site_transient_update_plugins', array(__CLASS__, 'hideFromUpdates'));
+		add_filter('auto_update_plugin'            , array(__CLASS__, 'disableAutoUpdate'), 10, 2);
+	}
+
+	/**
+	 * Semera compatibility patch: removes this plugin from the list of available plugin updates.
+	 *
+	 * @param mixed $transient
+	 * @return mixed $transient
+	 */
+	static function hideFromUpdates($transient)
+	{
+		$plugin = plugin_basename(__FILE__);
+
+		if (is_object($transient))
+		{
+			if (isset($transient->response) && is_array($transient->response))
+			{
+				unset($transient->response[$plugin]);
+			}
+
+			if (isset($transient->no_update) && is_array($transient->no_update))
+			{
+				unset($transient->no_update[$plugin]);
+			}
+		}
+
+		return $transient;
+	}
+
+	/**
+	 * Semera compatibility patch: disables automatic updates for this plugin.
+	 *
+	 * @param bool|null $update
+	 * @param object    $item
+	 * @return bool|null
+	 */
+	static function disableAutoUpdate($update, $item)
+	{
+		if (is_object($item) && isset($item->plugin) && $item->plugin === plugin_basename(__FILE__))
+		{
+			return false;
+		}
+
+		return $update;
 	}
 
 	/**
@@ -85,12 +138,30 @@ class SlideshowPluginMain
 				self::$version
 			);
 
-			wp_localize_script(
-				'slideshow-jquery-image-gallery-script',
-				'slideshow_jquery_image_gallery_script_adminURL',
-				admin_url()
-			);
+			self::localizeAdminURL('slideshow-jquery-image-gallery-script');
 		}
+	}
+
+	/**
+	 * Semera compatibility patch: passes the admin URL to a script as a JavaScript variable. wp_localize_script() only
+	 * accepts arrays since WordPress 5.7 (passing a string logs a notice), so an inline script is used where available.
+	 *
+	 * @param string $handle
+	 */
+	static function localizeAdminURL($handle)
+	{
+		if (function_exists('wp_add_inline_script'))
+		{
+			wp_add_inline_script(
+				$handle,
+				'var slideshow_jquery_image_gallery_script_adminURL = ' . wp_json_encode(admin_url()) . ';',
+				'before'
+			);
+
+			return;
+		}
+
+		wp_localize_script($handle, 'slideshow_jquery_image_gallery_script_adminURL', admin_url());
 	}
 
 	/**

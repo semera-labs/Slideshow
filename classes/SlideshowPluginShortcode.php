@@ -61,7 +61,8 @@ class SlideshowPluginShortcode
 
 		$settings = SlideshowPluginSlideshowSettingsHandler::getSettings($postId);
 
-		if ($settings['avoidFilter'] == 'true' &&
+		if (isset($settings['avoidFilter']) &&
+			$settings['avoidFilter'] == 'true' &&
 			strlen(current_filter()) > 0)
 		{
 			// Avoid current filter, call function to replace the bookmark with the slideshow

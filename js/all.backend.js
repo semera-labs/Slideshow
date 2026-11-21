@@ -31,7 +31,7 @@ slideshow_jquery_image_gallery_backend_script = function()
 
 	$(document).ready(self.init);
 
-	$(window).load(self.init);
+	$(window).on('load', self.init);
 
 	return self;
 }();

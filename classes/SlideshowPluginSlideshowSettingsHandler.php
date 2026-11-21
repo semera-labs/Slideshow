@@ -438,9 +438,11 @@ class SlideshowPluginSlideshowSettingsHandler
 		// Read defaults from database and merge with $data, when $fromDatabase is set to true
 		if ($fromDatabase)
 		{
+			$customData = get_option(SlideshowPluginGeneralSettings::$defaultSettings, array());
+
 			$data = array_merge(
 				$data,
-				$customData = get_option(SlideshowPluginGeneralSettings::$defaultSettings, array())
+				is_array($customData) ? $customData : array()
 			);
 		}
 
@@ -530,9 +532,11 @@ class SlideshowPluginSlideshowSettingsHandler
 		// Read defaults from database and merge with $data, when $fromDatabase is set to true
 		if ($fromDatabase)
 		{
+			$customData = get_option(SlideshowPluginGeneralSettings::$defaultStyleSettings, array());
+
 			$data = array_merge(
 				$data,
-				$customData = get_option(SlideshowPluginGeneralSettings::$defaultStyleSettings, array())
+				is_array($customData) ? $customData : array()
 			);
 		}
 
@@ -584,7 +588,7 @@ class SlideshowPluginSlideshowSettingsHandler
 					type="text"
 					name="' . $name . '"
 					class="' . $class . '"
-					value="' . $displayValue . '"
+					value="' . esc_attr($displayValue) . '"
 				/>';
 
 				break;
@@ -596,7 +600,7 @@ class SlideshowPluginSlideshowSettingsHandler
 					class="' . $class . '"
 					rows="20"
 					cols="60"
-				>' . $displayValue . '</textarea>';
+				>' . esc_textarea($displayValue) . '</textarea>';
 
 				break;
 

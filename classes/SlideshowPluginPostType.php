@@ -285,8 +285,8 @@ class SlideshowPluginPostType
 	static function duplicateSlideshow()
 	{
 		$postID           = filter_input(INPUT_GET, 'post'     , FILTER_VALIDATE_INT);
-		$nonce            = filter_input(INPUT_GET, 'nonce'    , FILTER_SANITIZE_STRING);
-		$postType         = filter_input(INPUT_GET, 'post_type', FILTER_SANITIZE_STRING);
+		$nonce            = filter_input(INPUT_GET, 'nonce'    , FILTER_SANITIZE_SPECIAL_CHARS);
+		$postType         = filter_input(INPUT_GET, 'post_type', FILTER_SANITIZE_SPECIAL_CHARS);
 		$errorRedirectURL = remove_query_arg(array('action', 'post', 'nonce'));
 
 		// Check if nonce is correct and user has the correct privileges

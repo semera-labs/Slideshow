@@ -234,6 +234,11 @@ class SlideshowPluginGeneralSettings
 		// Get custom styles
 		$customStyles = get_option(SlideshowPluginGeneralSettings::$customStyles, array());
 
+		if (!is_array($customStyles))
+		{
+			$customStyles = array();
+		}
+
 		// Add version to the custom styles if $withVersion is true
 		if ($withVersion)
 		{
@@ -339,6 +344,12 @@ class SlideshowPluginGeneralSettings
 		if (!wp_verify_nonce($nonce, self::$settingsGroup . '-options'))
 		{
 			return $customStyles;
+		}
+
+		// Semera compatibility patch: no custom styles posted (null) must be treated as an empty list (PHP 8 TypeError)
+		if (!is_array($customStyles))
+		{
+			$customStyles = array();
 		}
 
 		// Remove custom styles that have been deleted

@@ -244,7 +244,7 @@ slideshow_jquery_image_gallery_script = function()
 		self.init();
 	});
 
-	$(window).load(function()
+	$(window).on('load', function()
 	{
 		self.init();
 	});

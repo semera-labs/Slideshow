@@ -206,7 +206,7 @@
 		}, this));
 
 		// Recalculate visible views when window is loaded
-		$(window).load($.proxy(function()
+		$(window).on('load', $.proxy(function()
 		{
 			this.recalculate(true);
 		}, this));

@@ -1,6 +1,6 @@
 <?php if ($data instanceof stdClass) : ?>
 
-	<div class="slideshow_container slideshow_container_<?php echo htmlspecialchars($data->styleName); ?>" style="<?php echo (isset($data->settings['preserveSlideshowDimensions']) && $data->settings['preserveSlideshowDimensions'] == 'false' && isset($data->settings['height']) && $data->settings['height'] > 0) ? 'height: ' . $data->settings['height'] . 'px;' : ''; ?> <?php echo (isset($data->settings['maxWidth']) && $data->settings['maxWidth'] > 0) ? 'max-width: ' . $data->settings['maxWidth'] . 'px;' : ''; ?>" data-slideshow-id="<?php echo htmlspecialchars($data->post->ID); ?>" data-style-name="<?php echo htmlspecialchars($data->styleName); ?>" data-style-version="<?php echo htmlspecialchars($data->styleVersion); ?>" <?php if (SlideshowPluginGeneralSettings::getEnableLazyLoading()) : ?>data-settings="<?php echo htmlspecialchars(json_encode($data->settings)); ?>"<?php endif; ?>>
+	<div class="slideshow_container slideshow_container_<?php echo htmlspecialchars($data->styleName); ?>" style="<?php echo (isset($data->settings['preserveSlideshowDimensions']) && $data->settings['preserveSlideshowDimensions'] == 'false' && isset($data->settings['height']) && $data->settings['height'] > 0) ? 'height: ' . esc_attr($data->settings['height']) . 'px;' : ''; ?> <?php echo (isset($data->settings['maxWidth']) && $data->settings['maxWidth'] > 0) ? 'max-width: ' . esc_attr($data->settings['maxWidth']) . 'px;' : ''; ?>" data-slideshow-id="<?php echo htmlspecialchars($data->post->ID); ?>" data-style-name="<?php echo htmlspecialchars($data->styleName); ?>" data-style-version="<?php echo htmlspecialchars($data->styleVersion); ?>" <?php if (SlideshowPluginGeneralSettings::getEnableLazyLoading()) : ?>data-settings="<?php echo htmlspecialchars(json_encode($data->settings)); ?>"<?php endif; ?>>
 
 		<?php if(isset($data->settings['showLoadingIcon']) && $data->settings['showLoadingIcon'] === 'true'): ?>
 			<div class="slideshow_loading_icon"></div>
@@ -14,6 +14,9 @@
 			{
 				$i = 0;
 
+				// Semera compatibility patch: avoid "Modulo by zero" / TypeError for empty or non-numeric values
+				$slidesPerView = max(1, (int) $data->settings['slidesPerView']);
+
 				for ($i; $i < count($data->slides); $i++)
 				{
 					echo '<div class="slideshow_view">';
@@ -25,7 +28,7 @@
 
 						SlideshowPluginMain::outputView('SlideshowPluginSlideshowSlide' . DIRECTORY_SEPARATOR . 'frontend_' . $data->slides[$i]['type'] . '.php', $slideData);
 
-						if (($i + 1) % $data->settings['slidesPerView'] == 0)
+						if (($i + 1) % $slidesPerView == 0)
 						{
 							break;
 						}
